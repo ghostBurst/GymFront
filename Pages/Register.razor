@@ -1,0 +1,36 @@
+﻿@page "/register"
+@inject HttpClient Http
+
+<EditForm Model="@user" OnValidSubmit="RegisterUser">
+    <InputText id="name" @bind-Value="user.Name" placeholder="Name" />
+    <InputText id="email" @bind-Value="user.Email" placeholder="Email" />
+    <InputText id="password" @bind-Value="user.Password" type="password" placeholder="Password" />
+    <button type="submit">Register</button>
+</EditForm>
+
+<p>@message</p>
+
+@code {
+    private User user = new User();
+    private string message = "";
+
+    private async Task RegisterUser()
+    {
+        var response = await Http.PostAsJsonAsync("api/Users/register", user);
+        if (response.IsSuccessStatusCode)
+        {
+            message = "Registration successful! 🎉";
+        }
+        else
+        {
+            message = "Registration failed. 😞";
+        }
+    }
+
+    public class User
+    {
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
+}
